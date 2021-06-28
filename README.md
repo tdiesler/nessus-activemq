@@ -1,7 +1,7 @@
 # Docker Image Example
 
 This is an example on how you could create your own Docker Image For Apache 
-ActiveMQ Artemis based on CentOS or Debian (JDK 8) or AdoptOpen JDK 11 (Ubuntu).
+ActiveMQ Artemis based on CentOS (JDK 8).
 
 # Preparing
 
@@ -28,33 +28,18 @@ Removing _TMP_/artemis/2.16.0/apache-artemis-2.16.0-bin.tar.gz...
 Using Artemis dist: _TMP_/artemis/2.16.0
 Docker file support files at : _TMP_/artemis/2.16.0/docker
 _TMP_/artemis/2.16.0/docker
-├── Dockerfile-adoptopenjdk-11
 ├── Dockerfile-centos
-├── Dockerfile-debian
 └── docker-run.sh
 
 0 directories, 4 files
 
 Well done! Now you can continue with the Docker image build.
 Building the Docker Image:
-  Go to _TMP_/artemis/2.16.0 where you prepared the binary with Docker files.
 
-  # Go to _TMP_/artemis/2.16.0
-  $ cd _TMP_/artemis/2.16.0
+  # Build for CentOS
+  $ ./build-docker.sh --from-release --artemis-version 2.16.0
 
-  # For Debian
-  $ docker build -f ./docker/Dockerfile-debian -t artemis-debian .
-
-  # For CentOS
-  $ docker build -f ./docker/Dockerfile-centos -t artemis-centos .
-
-  # For AdoptOpen JDK 11
-  $ docker build -f ./docker/Dockerfile-adoptopenjdk-11 -t artemis-adoptopenjdk-11 .
-
-Note: -t artemis-debian, -t artemis-centos and artemis-adoptopenjdk-11 are just
-tag names for the purpose of this guide
-
-For more info read the readme.md
+For more info read the README.md
 ```
 
 # Building for CentOS
@@ -110,12 +95,16 @@ A broker instance will be created during the execution of the instance. If you p
 
 The image just created in the previous step allows both stateless or stateful runs.
 The stateless run is achieved by:
+
 ```
-$ docker run --rm -it -p 61616:61616 -p 8161:8161 artemis-centos 
+$ docker run --rm -it -p 61616:61616 -p 8161:8161 nessusio/activemq-artemis 
 ```
+
 The image will also support mapped folders and mapped ports. To run the image with the instance persisted on the host:
+
 ```
-docker run -it -p 61616:61616 -p 8161:8161 -v <broker folder on host>:/var/lib/artemis-instance artemis-centos 
+docker run -it -p 61616:61616 -p 8161:8161 -v <broker folder on host>:/var/lib/artemis-instance nessusio/activemq-artemis 
 ```
+
 where `<broker folder on host>` is a folder where the broker instance is supposed to 
 be saved and reused on each run.
