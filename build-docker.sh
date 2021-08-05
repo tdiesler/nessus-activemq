@@ -29,17 +29,19 @@ $@
 
 Usage:
   # Build the Docker Image from the release version
-  ./build-docker.sh --from-release --artemis-version {release-version}
+  ./build-docker.sh --from-release --image-name {image-name} --artemis-version {release-version}
 
   # Show the usage command
   ./build-docker.sh --help
 
 Example:
-  ./build-docker.sh --from-release --artemis-version 2.16.0  
+  ./build-docker.sh --from-release --image-name nessusio/activemq-artemis --artemis-version 2.16.0  
 
 HERE
   exit 1
 }
+
+IMAGE_NAME="nessusio/activemq-artemis"
 
 while [ "$#" -ge 1 ]
 do
@@ -51,9 +53,13 @@ key="$1"
     --from-release)
     FROM_RELEASE="true"
     ;;
+    --image-name)
+    IMAGE_NAME="$2"
+  	shift
+    ;;
     --artemis-version)
     ARTEMIS_VERSION="$2"
-    shift
+  	shift
     ;;
     *)
     # unknown option
@@ -69,5 +75,5 @@ BASE_TMPDIR="_TMP_/artemis"
 ARTEMIS_DIST="$BASE_TMPDIR/$ARTEMIS_VERSION"
 
 # Build for CentOS
-docker build -f "$ARTEMIS_DIST/docker/Dockerfile-centos" -t nessusio/activemq-artemis:$ARTEMIS_VERSION $ARTEMIS_DIST
-docker tag nessusio/activemq-artemis:$ARTEMIS_VERSION nessusio/activemq-artemis:latest
+docker build -f "$ARTEMIS_DIST/docker/Dockerfile-centos" -t $IMAGE_NAME:$ARTEMIS_VERSION $ARTEMIS_DIST
+docker tag $IMAGE_NAME:$ARTEMIS_VERSION $IMAGE_NAME:latest
