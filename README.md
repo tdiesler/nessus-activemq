@@ -91,13 +91,21 @@ This will hold the configuration and the data of the running broker. This is use
 
 A broker instance will be created during the execution of the instance. If you pass a mapped folder for `/var/lib/artemis-instance` an image will be created or reused depending on the contents of the folder.
 
-## Running a CentOS image
+## Running an Artemis image
 
 The image just created in the previous step allows both stateless or stateful runs.
 The stateless run is achieved by:
 
 ```
-$ docker run --rm -it -p 61616:61616 -p 8161:8161 nessusio/activemq-artemis 
+docker rm -f artemis
+docker run --detach \
+  --name=artemis \
+  -p 61616:61616 \
+  -p 8161:8161 \
+  -e ANONYMOUS_LOGIN=true \
+  nessusio/activemq-artemis
+
+docker logs -n 200 -f artemis 
 ```
 
 The image will also support mapped folders and mapped ports. To run the image with the instance persisted on the host:
