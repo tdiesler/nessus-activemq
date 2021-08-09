@@ -17,7 +17,7 @@
 
 # ActiveMQ Artemis
 
-FROM jboss/base-jdk:8
+FROM quay.io/bitnami/java:1.8
 LABEL maintainer="Apache ActiveMQ Team"
 # Make sure pipes are considered to determine success, see: https://github.com/hadolint/hadolint/wiki/DL4006
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -28,13 +28,15 @@ ENV ARTEMIS_PASSWORD artemis
 ENV ANONYMOUS_LOGIN false
 ENV EXTRA_ARGS --http-host 0.0.0.0 --relax-jolokia
 
-USER root
-
 # add user and group for artemis
 RUN groupadd -g 1001 -r artemis && useradd -r -u 1001 -g artemis artemis \
- && yum install -y libaio && yum -y clean all
+ && apt update && apt-get install -y libaio1 && apt-get -y clean all
 
-USER artemis
+RUN mkdir /var/lib/artemis-instance && chown -R artemis.artemis /var/lib/artemis-instance
+
+COPY ./docker/docker-run.sh /
+
+# USER artemis
 
 ADD . /opt/activemq-artemis
 
@@ -52,14 +54,6 @@ EXPOSE 8161 \
     1883 \
 #Port for STOMP
     61613
-
-USER root
-
-RUN mkdir /var/lib/artemis-instance && chown -R artemis.artemis /var/lib/artemis-instance
-
-COPY ./docker/docker-run.sh /
-
-USER artemis
 
 # Expose some outstanding folders
 VOLUME ["/var/lib/artemis-instance"]

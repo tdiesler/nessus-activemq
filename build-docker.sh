@@ -35,7 +35,7 @@ Usage:
   ./build-docker.sh --help
 
 Example:
-  ./build-docker.sh --from-release --image-name nessusio/activemq-artemis --artemis-version 2.16.0  
+  ./build-docker.sh --from-release --image-name quay.io/nessusio/activemq-artemis --artemis-version 2.16.0  
 
 HERE
   exit 1
@@ -74,6 +74,9 @@ done
 BASE_TMPDIR="_TMP_/artemis"
 ARTEMIS_DIST="$BASE_TMPDIR/$ARTEMIS_VERSION"
 
+FULL_IMAGE_NAME="$IMAGE_NAME:$ARTEMIS_VERSION-dev"
+LATEST_IMAGE_NAME="$IMAGE_NAME:dev"
+
 # Build for CentOS
-docker build -f "$ARTEMIS_DIST/docker/Dockerfile-centos" -t $IMAGE_NAME:$ARTEMIS_VERSION $ARTEMIS_DIST
-docker tag $IMAGE_NAME:$ARTEMIS_VERSION $IMAGE_NAME:latest
+docker build -f "$ARTEMIS_DIST/docker/Dockerfile-centos" -t $FULL_IMAGE_NAME $ARTEMIS_DIST
+docker tag $FULL_IMAGE_NAME $LATEST_IMAGE_NAME
